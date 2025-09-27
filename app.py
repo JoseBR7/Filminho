@@ -61,25 +61,35 @@ sidebar_option = st.sidebar.selectbox(
     ["Cenário", "Perguntas", "Análises", "Modelos", "Conclusões", "Sugestões de Negócio"]
 )
 
+# Função para gerar gráficos
+def plot_distribution():
+    fig, ax = plt.subplots(figsize=(10, 6))
+    sns.histplot(df['vote_average'], kde=True, color='purple', ax=ax)
+    ax.set_title("Distribuição das Avaliações dos Filmes")
+    st.pyplot(fig)
+
+def plot_scatter():
+    fig, ax = plt.subplots(figsize=(10, 6))
+    sns.scatterplot(data=df, x='budget', y='revenue', color='teal', ax=ax)
+    ax.set_title("Relação entre Orçamento e Receita dos Filmes")
+    ax.set_xlabel("Orçamento")
+    ax.set_ylabel("Receita")
+    st.pyplot(fig)
+
+def plot_boxplot():
+    fig, ax = plt.subplots(figsize=(12, 6))
+    sns.boxplot(data=df, x='main_genre', y='vote_average', palette='Set2', ax=ax)
+    ax.set_title("Avaliações por Gênero de Filme")
+    ax.set_xticklabels(ax.get_xticklabels(), rotation=90)
+    st.pyplot(fig)
+
+def plot_countplot():
+    fig, ax = plt.subplots(figsize=(10, 8))
+    sns.countplot(data=df, y='original_language', order=df['original_language'].value_counts().index, palette='coolwarm', ax=ax)
+    ax.set_title("Distribuição de Filmes por Idioma Original")
+    st.pyplot(fig)
+
 # Seção: Cenário
-if sidebar_option == "Cenário":
-    st.title("Cenário")
-    st.markdown("""
-        O cenário deste estudo envolve a análise de filmes, utilizando dados de orçamento, receita, popularidade e avaliações.
-        O objetivo principal é entender os fatores que influenciam a popularidade e o sucesso dos filmes, 
-        e construir um modelo de regressão para prever as avaliações de novos filmes com base nesses fatores.
-    """)
-
-# Seção: Perguntas
-elif sidebar_option == "Perguntas":
-    st.title("Perguntas de Pesquisa")
-    st.markdown("""
-        As principais perguntas de pesquisa para este estudo são:
-        - Quais características de um filme (orçamento, receita, popularidade) mais influenciam a avaliação dos filmes?
-        - Existe uma correlação significativa entre o orçamento e a receita dos filmes?
-        - Como os diferentes gêneros de filmes impactam suas avaliações?
-    """)
-
 # Seção: Análises
 elif sidebar_option == "Análises":
     st.title("Análises dos Dados")
@@ -144,30 +154,3 @@ elif sidebar_option == "Sugestões de Negócio":
         - Usar o modelo de regressão para prever o desempenho de filmes antes de seu lançamento e ajustar as estratégias de marketing.
     """)
 
-# Função para gerar gráficos
-def plot_distribution():
-    fig, ax = plt.subplots(figsize=(10, 6))
-    sns.histplot(df['vote_average'], kde=True, color='purple', ax=ax)
-    ax.set_title("Distribuição das Avaliações dos Filmes")
-    st.pyplot(fig)
-
-def plot_scatter():
-    fig, ax = plt.subplots(figsize=(10, 6))
-    sns.scatterplot(data=df, x='budget', y='revenue', color='teal', ax=ax)
-    ax.set_title("Relação entre Orçamento e Receita dos Filmes")
-    ax.set_xlabel("Orçamento")
-    ax.set_ylabel("Receita")
-    st.pyplot(fig)
-
-def plot_boxplot():
-    fig, ax = plt.subplots(figsize=(12, 6))
-    sns.boxplot(data=df, x='main_genre', y='vote_average', palette='Set2', ax=ax)
-    ax.set_title("Avaliações por Gênero de Filme")
-    ax.set_xticklabels(ax.get_xticklabels(), rotation=90)
-    st.pyplot(fig)
-
-def plot_countplot():
-    fig, ax = plt.subplots(figsize=(10, 8))
-    sns.countplot(data=df, y='original_language', order=df['original_language'].value_counts().index, palette='coolwarm', ax=ax)
-    ax.set_title("Distribuição de Filmes por Idioma Original")
-    st.pyplot(fig)
