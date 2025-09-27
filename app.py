@@ -54,22 +54,95 @@ df['main_genre'] = df['main_genre'].replace('', 'Desconhecido')  # Substituir va
 # Definindo o layout
 st.set_page_config(page_title="Análise de Filmes", page_icon="🎬", layout="wide")
 
-# Divisão em variáveis de entrada (X) e variável de saída (y)
-X = df[['budget', 'revenue', 'popularity', 'vote_count']]
-y = df['vote_average']
+# Adicionando uma barra lateral com as seções
+st.sidebar.header("Análise de Filmes")
+sidebar_option = st.sidebar.selectbox(
+    "Escolha uma seção:",
+    ["Cenário", "Perguntas", "Análises", "Modelos", "Conclusões", "Sugestões de Negócio"]
+)
 
-# Divisão em treino e teste
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+# Seção: Cenário
+if sidebar_option == "Cenário":
+    st.title("Cenário")
+    st.markdown("""
+        O cenário deste estudo envolve a análise de filmes, utilizando dados de orçamento, receita, popularidade e avaliações.
+        O objetivo principal é entender os fatores que influenciam a popularidade e o sucesso dos filmes, 
+        e construir um modelo de regressão para prever as avaliações de novos filmes com base nesses fatores.
+    """)
 
-# Treinamento do modelo
-model = LinearRegression()
-model.fit(X_train, y_train)
-y_pred = model.predict(X_test)
+# Seção: Perguntas
+elif sidebar_option == "Perguntas":
+    st.title("Perguntas de Pesquisa")
+    st.markdown("""
+        As principais perguntas de pesquisa para este estudo são:
+        - Quais características de um filme (orçamento, receita, popularidade) mais influenciam a avaliação dos filmes?
+        - Existe uma correlação significativa entre o orçamento e a receita dos filmes?
+        - Como os diferentes gêneros de filmes impactam suas avaliações?
+    """)
 
-# Avaliação do modelo
-mse = mean_squared_error(y_test, y_pred)
-rmse = np.sqrt(mse)
-r2 = r2_score(y_test, y_pred)
+# Seção: Análises
+elif sidebar_option == "Análises":
+    st.title("Análises dos Dados")
+    st.markdown("""
+        A análise dos dados foi realizada com base nas seguintes variáveis:
+        - **Orçamento (budget)**: O custo para produção do filme.
+        - **Receita (revenue)**: O retorno financeiro do filme.
+        - **Popularidade (popularity)**: O nível de popularidade medido por interações e visualizações.
+        - **Avaliação (vote_average)**: A nota média dada pelos usuários ao filme.
+        
+        Analisamos também a distribuição das avaliações, a relação entre orçamento e receita, e como os gêneros impactam as avaliações.
+    """)
+
+    # Gráficos e análises descritivas
+    st.subheader("Distribuição das Avaliações (Vote Average)")
+    plot_distribution()
+
+# Seção: Modelos
+elif sidebar_option == "Modelos":
+    st.title("Modelos de Previsão")
+    st.markdown("""
+        Foi desenvolvido um modelo de regressão linear para prever a avaliação dos filmes (vote_average) com base em características como:
+        - Orçamento
+        - Receita
+        - Popularidade
+        - Contagem de votos
+        
+        O modelo foi treinado usando dados de 80% dos filmes e testado com os outros 20%.
+    """)
+
+    # Exibir os resultados da regressão linear
+    st.subheader("Resultados da Regressão Linear")
+    st.write(f"**MSE (Erro Quadrático Médio)**: {mse:.2f}")
+    st.write(f"**RMSE (Raiz do Erro Quadrático Médio)**: {rmse:.2f}")
+    st.write(f"**R² (Coeficiente de Determinação)**: {r2:.2f}")
+
+    # Exibição dos coeficientes do modelo
+    st.write("**Coeficientes do Modelo de Regressão Linear**:")
+    coef_df = pd.DataFrame({
+        'Variáveis': X.columns,
+        'Coeficientes': model.coef_
+    })
+    st.write(coef_df)
+
+# Seção: Conclusões
+elif sidebar_option == "Conclusões":
+    st.title("Conclusões")
+    st.markdown("""
+        As principais conclusões deste estudo incluem:
+        - O **orçamento** e a **receita** dos filmes têm uma correlação positiva significativa.
+        - Filmes com maior **popularidade** tendem a ter avaliações mais altas.
+        - O modelo de regressão linear obteve uma boa performance, com **R²** superior a 0.7, indicando que ele consegue explicar uma boa parte da variação nas avaliações dos filmes.
+    """)
+
+# Seção: Sugestões de Negócio
+elif sidebar_option == "Sugestões de Negócio":
+    st.title("Sugestões de Negócio")
+    st.markdown("""
+        Com base nas conclusões, podemos sugerir:
+        - **Investir em filmes com grandes orçamentos** e altos níveis de popularidade para maximizar as avaliações e o retorno financeiro.
+        - **Focar em filmes de gêneros populares**, pois eles tendem a ter avaliações melhores, o que pode impactar diretamente nas receitas.
+        - Usar o modelo de regressão para prever o desempenho de filmes antes de seu lançamento e ajustar as estratégias de marketing.
+    """)
 
 # Função para gerar gráficos
 def plot_distribution():
@@ -98,54 +171,3 @@ def plot_countplot():
     sns.countplot(data=df, y='original_language', order=df['original_language'].value_counts().index, palette='coolwarm', ax=ax)
     ax.set_title("Distribuição de Filmes por Idioma Original")
     st.pyplot(fig)
-
-# Adicionando uma barra lateral
-st.sidebar.header("Opções de Visualização")
-option = st.sidebar.selectbox(
-    "Escolha uma visualização:",
-    ["Distribuição das Avaliações", "Gráfico de Dispersão", "Boxplot por Gênero", "Contagem de Idioma"]
-)
-
-# Renderizar gráfico conforme a seleção do usuário
-if option == "Distribuição das Avaliações":
-    # Cabeçalho e descrição apenas nesta aba
-    st.title("Análise de Filmes e Previsão de Avaliações")
-    st.markdown("""
-        Bem-vindo à análise de dados dos filmes! Aqui, você pode explorar a distribuição das avaliações, 
-        os gráficos de orçamento versus receita, os gêneros de filmes, e também testar um modelo de regressão 
-        linear para prever as avaliações dos filmes com base em características como orçamento e popularidade.
-    """)
-
-    # Exibir os primeiros dados com um título
-    st.subheader("Primeiras Linhas do DataFrame")
-    st.dataframe(df[["budget", "revenue", "vote_average", "popularity", "vote_count"]].describe())
-
-    # Exibir os resultados da regressão linear
-    st.subheader("Resultados da Regressão Linear")
-    st.write(f"**MSE (Erro Quadrático Médio)**: {mse:.2f}")
-    st.write(f"**RMSE (Raiz do Erro Quadrático Médio)**: {rmse:.2f}")
-    st.write(f"**R² (Coeficiente de Determinação)**: {r2:.2f}")
-
-    # Exibição dos coeficientes do modelo
-    st.write("**Coeficientes do Modelo de Regressão Linear**:")
-    coef_df = pd.DataFrame({
-        'Variáveis': X.columns,
-        'Coeficientes': model.coef_
-    })
-    st.write(coef_df)
-
-    # Gráfico de distribuição
-    st.subheader("Distribuição das Avaliações (Vote Average)")
-    plot_distribution()
-
-elif option == "Gráfico de Dispersão":
-    st.subheader("Gráfico de Dispersão entre Orçamento e Receita")
-    plot_scatter()
-
-elif option == "Boxplot por Gênero":
-    st.subheader("Boxplot das Avaliações por Gênero Principal")
-    plot_boxplot()
-
-else:
-    st.subheader("Contagem de Filmes por Idioma Original")
-    plot_countplot()
