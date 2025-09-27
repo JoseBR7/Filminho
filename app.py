@@ -58,7 +58,7 @@ st.set_page_config(page_title="Análise de Filmes", page_icon="🎬", layout="wi
 st.sidebar.header("Análise de Filmes")
 sidebar_option = st.sidebar.selectbox(
     "Escolha uma seção:",
-    ["Cenário", "Perguntas", "Análises", "Modelos", "Conclusões", "Sugestões de Negócio"]
+    ["Análises", "Modelos", "Conclusões", "Sugestões de Negócio"]
 )
 
 # Função para gerar gráficos
@@ -89,8 +89,27 @@ def plot_countplot():
     ax.set_title("Distribuição de Filmes por Idioma Original")
     st.pyplot(fig)
 
-# Seção: Cenário
-# Seção: Análises
+# Divisão em variáveis de entrada (X) e variável de saída (y)
+X = df[['budget', 'revenue', 'popularity', 'vote_count']]
+y = df['vote_average']
+
+# Divisão em treino e teste
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Inicialização do modelo
+model = LinearRegression()
+
+# Treinamento do modelo
+model.fit(X_train, y_train)
+
+# Previsões do modelo
+y_pred = model.predict(X_test)
+
+# Avaliação do modelo
+mse = mean_squared_error(y_test, y_pred)
+rmse = np.sqrt(mse)
+r2 = r2_score(y_test, y_pred)
+
 if sidebar_option == "Análises":
     st.title("Análises dos Dados")
     st.markdown("""
@@ -141,16 +160,4 @@ elif sidebar_option == "Conclusões":
         As principais conclusões deste estudo incluem:
         - O **orçamento** e a **receita** dos filmes têm uma correlação positiva significativa.
         - Filmes com maior **popularidade** tendem a ter avaliações mais altas.
-        - O modelo de regressão linear obteve uma boa performance, com **R²** superior a 0.7, indicando que ele consegue explicar uma boa parte da variação nas avaliações dos filmes.
-    """)
-
-# Seção: Sugestões de Negócio
-elif sidebar_option == "Sugestões de Negócio":
-    st.title("Sugestões de Negócio")
-    st.markdown("""
-        Com base nas conclusões, podemos sugerir:
-        - **Investir em filmes com grandes orçamentos** e altos níveis de popularidade para maximizar as avaliações e o retorno financeiro.
-        - **Focar em filmes de gêneros populares**, pois eles tendem a ter avaliações melhores, o que pode impactar diretamente nas receitas.
-        - Usar o modelo de regressão para prever o desempenho de filmes antes de seu lançamento e ajustar as estratégias de marketing.
-    """)
-
+        - O modelo de regressão linear obteve uma boa performance, com **R²** superior a 0.7, indicando que ele consegue explicar uma boa
