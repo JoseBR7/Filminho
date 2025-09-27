@@ -53,16 +53,6 @@ df['main_genre'] = df['main_genre'].replace('', 'Desconhecido')  # Substituir va
 
 # Definindo o layout
 st.set_page_config(page_title="Análise de Filmes", page_icon="🎬", layout="wide")
-st.title("Análise de Filmes e Previsão de Avaliações")
-st.markdown("""
-    Bem-vindo à análise de dados dos filmes! Aqui, você pode explorar a distribuição das avaliações, 
-    os gráficos de orçamento versus receita, os gêneros de filmes, e também testar um modelo de regressão 
-    linear para prever as avaliações dos filmes com base em características como orçamento e popularidade.
-    """)
-
-# Exibir os primeiros dados com um título
-st.subheader("Primeiras Linhas do DataFrame")
-st.dataframe(df[["budget", "revenue", "vote_average", "popularity", "vote_count"]].describe())
 
 # Divisão em variáveis de entrada (X) e variável de saída (y)
 X = df[['budget', 'revenue', 'popularity', 'vote_count']]
@@ -80,8 +70,6 @@ y_pred = model.predict(X_test)
 mse = mean_squared_error(y_test, y_pred)
 rmse = np.sqrt(mse)
 r2 = r2_score(y_test, y_pred)
-
-# Exibir os resultados da regressão com título
 
 # Função para gerar gráficos
 def plot_distribution():
@@ -120,6 +108,19 @@ option = st.sidebar.selectbox(
 
 # Renderizar gráfico conforme a seleção do usuário
 if option == "Distribuição das Avaliações":
+    # Cabeçalho e descrição apenas nesta aba
+    st.title("Análise de Filmes e Previsão de Avaliações")
+    st.markdown("""
+        Bem-vindo à análise de dados dos filmes! Aqui, você pode explorar a distribuição das avaliações, 
+        os gráficos de orçamento versus receita, os gêneros de filmes, e também testar um modelo de regressão 
+        linear para prever as avaliações dos filmes com base em características como orçamento e popularidade.
+    """)
+
+    # Exibir os primeiros dados com um título
+    st.subheader("Primeiras Linhas do DataFrame")
+    st.dataframe(df[["budget", "revenue", "vote_average", "popularity", "vote_count"]].describe())
+
+    # Exibir os resultados da regressão linear
     st.subheader("Resultados da Regressão Linear")
     st.write(f"**MSE (Erro Quadrático Médio)**: {mse:.2f}")
     st.write(f"**RMSE (Raiz do Erro Quadrático Médio)**: {rmse:.2f}")
@@ -128,10 +129,12 @@ if option == "Distribuição das Avaliações":
     # Exibição dos coeficientes do modelo
     st.write("**Coeficientes do Modelo de Regressão Linear**:")
     coef_df = pd.DataFrame({
-    'Variáveis': X.columns,
-    'Coeficientes': model.coef_
-})
-st.write(coef_df)
+        'Variáveis': X.columns,
+        'Coeficientes': model.coef_
+    })
+    st.write(coef_df)
+
+    # Gráfico de distribuição
     st.subheader("Distribuição das Avaliações (Vote Average)")
     plot_distribution()
 
