@@ -9,6 +9,7 @@ from sklearn.metrics import mean_squared_error, r2_score
 import json
 
 # Função para carregar os dados
+@st.cache_data
 def carregar_dados():
     url_movies = "https://drive.google.com/uc?export=download&id=17dWfqGAtdKZAR0rTCT6cv7weiIcrNycZ"
     url_credits = "https://drive.google.com/uc?export=download&id=1hQwFfz4ZXtF9UYwiH7VEwThbg207XjRL"
@@ -37,19 +38,35 @@ df = parse_json_column(df, 'keywords')
 df = parse_json_column(df, 'cast')
 df = parse_json_column(df, 'crew')
 
-# Exibir os primeiros dados
-st.write("Primeiras Linhas do DataFrame:")
+# Definindo o layout
+st.set_page_config(page_title="Análise de Filmes", page_icon="🎬", layout="wide")
+st.title("Análise de Filmes e Previsão de Avaliações")
+st.markdown("""
+    Bem-vindo à análise de dados dos filmes! Aqui, você pode explorar a distribuição das avaliações, 
+    os gráficos de orçamento versus receita, os gêneros de filmes, e também testar um modelo de regressão 
+    linear para prever as avaliações dos filmes com base em características como orçamento e popularidade.
+    """)
+
+# Exibir os primeiros dados com um título
+st.subheader("Primeiras Linhas do DataFrame")
 st.write(df.head())
 
-# Visualização da distribuição das avaliações
-st.write("Distribuição das Avaliações (Vote Average):")
-sns.histplot(df['vote_average'], kde=True)
-st.pyplot()
+# Visualização da distribuição das avaliações com título
+st.subheader("Distribuição das Avaliações (Vote Average)")
+sns.set(style="whitegrid")
+plt.figure(figsize=(10, 6))
+sns.histplot(df['vote_average'], kde=True, color='purple')
+plt.title("Distribuição das Avaliações dos Filmes")
+st.pyplot(use_container_width=True)
 
-# Visualização do gráfico de dispersão entre orçamento e receita
-st.write("Gráfico de Dispersão entre Orçamento e Receita:")
-sns.scatterplot(data=df, x='budget', y='revenue')
-st.pyplot()
+# Visualização do gráfico de dispersão entre orçamento e receita com título
+st.subheader("Gráfico de Dispersão entre Orçamento e Receita")
+plt.figure(figsize=(10, 6))
+sns.scatterplot(data=df, x='budget', y='revenue', color='teal')
+plt.title("Relação entre Orçamento e Receita dos Filmes")
+plt.xlabel("Orçamento")
+plt.ylabel("Receita")
+st.pyplot(use_container_width=True)
 
 # Função para obter o gênero principal
 def main_genre_in_list(genre_list):
@@ -60,17 +77,20 @@ def main_genre_in_list(genre_list):
 # Criar a coluna de gênero principal
 df['main_genre'] = df['genres'].apply(main_genre_in_list)
 
-# Boxplot para avaliação por gênero
-st.write("Boxplot das Avaliações por Gênero Principal:")
+# Boxplot para avaliação por gênero com título
+st.subheader("Boxplot das Avaliações por Gênero Principal")
 plt.figure(figsize=(12, 6))
-sns.boxplot(data=df, x='main_genre', y='vote_average')
+sns.boxplot(data=df, x='main_genre', y='vote_average', palette='Set2')
 plt.xticks(rotation=90)
-st.pyplot()
+plt.title("Avaliações por Gênero de Filme")
+st.pyplot(use_container_width=True)
 
-st.write("Contagem de Filmes por Idioma Original:")
+# Contagem de filmes por idioma original com título
+st.subheader("Contagem de Filmes por Idioma Original")
 plt.figure(figsize=(10, 8))
-sns.countplot(data=df, y='original_language', order=df['original_language'].value_counts().index)
-st.pyplot()
+sns.countplot(data=df, y='original_language', order=df['original_language'].value_counts().index, palette='coolwarm')
+plt.title("Distribuição de Filmes por Idioma Original")
+st.pyplot(use_container_width=True)
 
 # Divisão em variáveis de entrada (X) e variável de saída (y)
 X = df[['budget', 'revenue', 'popularity', 'vote_count']]
@@ -89,8 +109,44 @@ mse = mean_squared_error(y_test, y_pred)
 rmse = np.sqrt(mse)
 r2 = r2_score(y_test, y_pred)
 
-# Exibir os resultados da regressão
-st.write(f"MSE: {mse}")
-st.write(f"RMSE: {rmse}")
-st.write(f"R²: {r2}")
+# Exibir os resultados da regressão com título
+st.subheader("Resultados da Regressão Linear")
+st.write(f"**MSE (Erro Quadrático Médio)**: {mse:.2f}")
+st.write(f"**RMSE (Raiz do Erro Quadrático Médio)**: {rmse:.2f}")
+st.write(f"**R² (Coeficiente de Determinação)**: {r2:.2f}")
 
+# Exibição dos coeficientes do modelo
+st.write("**Coeficientes do Modelo de Regressão Linear**:")
+coef_df = pd.DataFrame({
+    'Variáveis': X.columns,
+    'Coeficientes': model.coef_
+})
+st.write(coef_df)
+
+# Adicionando uma barra lateral
+st.sidebar.header("Opções de Visualização")
+option = st.sidebar.selectbox(
+    "Escolha uma visualização:",
+    ["Distribuição das Avaliações", "Gráfico de Dispersão", "Boxplot por Gênero", "Contagem de Idioma"]
+)
+
+if option == "Distribuição das Avaliações":
+    st.subheader("Distribuição das Avaliações (Vote Average)")
+    sns.histplot(df['vote_average'], kde=True, color='purple')
+    st.pyplot()
+
+elif option == "Gráfico de Dispersão":
+    st.subheader("Gráfico de Dispersão entre Orçamento e Receita")
+    sns.scatterplot(data=df, x='budget', y='revenue', color='teal')
+    st.pyplot()
+
+elif option == "Boxplot por Gênero":
+    st.subheader("Boxplot das Avaliações por Gênero Principal")
+    sns.boxplot(data=df, x='main_genre', y='vote_average', palette='Set2')
+    plt.xticks(rotation=90)
+    st.pyplot()
+
+else:
+    st.subheader("Contagem de Filmes por Idioma Original")
+    sns.countplot(data=df, y='original_language', order=df['original_language'].value_counts().index, palette='coolwarm')
+    st.pyplot()
