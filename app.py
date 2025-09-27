@@ -91,7 +91,7 @@ def plot_countplot():
 
 # Seção: Cenário
 # Seção: Análises
-elif sidebar_option == "Análises":
+if sidebar_option == "Análises":
     st.title("Análises dos Dados")
     st.markdown("""
         A análise dos dados foi realizada com base nas seguintes variáveis:
