@@ -54,19 +54,19 @@ st.write(df.head())
 # Visualização da distribuição das avaliações com título
 st.subheader("Distribuição das Avaliações (Vote Average)")
 sns.set(style="whitegrid")
-plt.figure(figsize=(10, 6))
-sns.histplot(df['vote_average'], kde=True, color='purple')
-plt.title("Distribuição das Avaliações dos Filmes")
-st.pyplot(use_container_width=True)
+fig, ax = plt.subplots(figsize=(10, 6))
+sns.histplot(df['vote_average'], kde=True, color='purple', ax=ax)
+ax.set_title("Distribuição das Avaliações dos Filmes")
+st.pyplot(fig)
 
 # Visualização do gráfico de dispersão entre orçamento e receita com título
 st.subheader("Gráfico de Dispersão entre Orçamento e Receita")
-plt.figure(figsize=(10, 6))
-sns.scatterplot(data=df, x='budget', y='revenue', color='teal')
-plt.title("Relação entre Orçamento e Receita dos Filmes")
-plt.xlabel("Orçamento")
-plt.ylabel("Receita")
-st.pyplot(use_container_width=True)
+fig, ax = plt.subplots(figsize=(10, 6))
+sns.scatterplot(data=df, x='budget', y='revenue', color='teal', ax=ax)
+ax.set_title("Relação entre Orçamento e Receita dos Filmes")
+ax.set_xlabel("Orçamento")
+ax.set_ylabel("Receita")
+st.pyplot(fig)
 
 # Função para obter o gênero principal
 def main_genre_in_list(genre_list):
@@ -79,18 +79,18 @@ df['main_genre'] = df['genres'].apply(main_genre_in_list)
 
 # Boxplot para avaliação por gênero com título
 st.subheader("Boxplot das Avaliações por Gênero Principal")
-plt.figure(figsize=(12, 6))
-sns.boxplot(data=df, x='main_genre', y='vote_average', palette='Set2')
-plt.xticks(rotation=90)
-plt.title("Avaliações por Gênero de Filme")
-st.pyplot(use_container_width=True)
+fig, ax = plt.subplots(figsize=(12, 6))
+sns.boxplot(data=df, x='main_genre', y='vote_average', palette='Set2', ax=ax)
+ax.set_title("Avaliações por Gênero de Filme")
+ax.set_xticklabels(ax.get_xticklabels(), rotation=90)
+st.pyplot(fig)
 
 # Contagem de filmes por idioma original com título
 st.subheader("Contagem de Filmes por Idioma Original")
-plt.figure(figsize=(10, 8))
-sns.countplot(data=df, y='original_language', order=df['original_language'].value_counts().index, palette='coolwarm')
-plt.title("Distribuição de Filmes por Idioma Original")
-st.pyplot(use_container_width=True)
+fig, ax = plt.subplots(figsize=(10, 8))
+sns.countplot(data=df, y='original_language', order=df['original_language'].value_counts().index, palette='coolwarm', ax=ax)
+ax.set_title("Distribuição de Filmes por Idioma Original")
+st.pyplot(fig)
 
 # Divisão em variáveis de entrada (X) e variável de saída (y)
 X = df[['budget', 'revenue', 'popularity', 'vote_count']]
@@ -132,21 +132,31 @@ option = st.sidebar.selectbox(
 
 if option == "Distribuição das Avaliações":
     st.subheader("Distribuição das Avaliações (Vote Average)")
-    sns.histplot(df['vote_average'], kde=True, color='purple')
-    st.pyplot()
+    fig, ax = plt.subplots(figsize=(10, 6))
+    sns.histplot(df['vote_average'], kde=True, color='purple', ax=ax)
+    ax.set_title("Distribuição das Avaliações dos Filmes")
+    st.pyplot(fig)
 
 elif option == "Gráfico de Dispersão":
     st.subheader("Gráfico de Dispersão entre Orçamento e Receita")
-    sns.scatterplot(data=df, x='budget', y='revenue', color='teal')
-    st.pyplot()
+    fig, ax = plt.subplots(figsize=(10, 6))
+    sns.scatterplot(data=df, x='budget', y='revenue', color='teal', ax=ax)
+    ax.set_title("Relação entre Orçamento e Receita dos Filmes")
+    ax.set_xlabel("Orçamento")
+    ax.set_ylabel("Receita")
+    st.pyplot(fig)
 
 elif option == "Boxplot por Gênero":
     st.subheader("Boxplot das Avaliações por Gênero Principal")
-    sns.boxplot(data=df, x='main_genre', y='vote_average', palette='Set2')
-    plt.xticks(rotation=90)
-    st.pyplot()
+    fig, ax = plt.subplots(figsize=(12, 6))
+    sns.boxplot(data=df, x='main_genre', y='vote_average', palette='Set2', ax=ax)
+    ax.set_title("Avaliações por Gênero de Filme")
+    ax.set_xticklabels(ax.get_xticklabels(), rotation=90)
+    st.pyplot(fig)
 
 else:
     st.subheader("Contagem de Filmes por Idioma Original")
-    sns.countplot(data=df, y='original_language', order=df['original_language'].value_counts().index, palette='coolwarm')
-    st.pyplot()
+    fig, ax = plt.subplots(figsize=(10, 8))
+    sns.countplot(data=df, y='original_language', order=df['original_language'].value_counts().index, palette='coolwarm', ax=ax)
+    ax.set_title("Distribuição de Filmes por Idioma Original")
+    st.pyplot(fig)
