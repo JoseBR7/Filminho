@@ -38,6 +38,19 @@ df = parse_json_column(df, 'keywords')
 df = parse_json_column(df, 'cast')
 df = parse_json_column(df, 'crew')
 
+# Função para obter o gênero principal
+def main_genre_in_list(genre_list):
+    if genre_list:
+        return genre_list[0]['name']
+    return None
+
+# Criar a coluna de gênero principal
+df['main_genre'] = df['genres'].apply(main_genre_in_list)
+
+# Limpeza de valores nulos ou vazios na coluna 'main_genre'
+df['main_genre'] = df['main_genre'].fillna('Desconhecido')  # Substituir NaN por 'Desconhecido'
+df['main_genre'] = df['main_genre'].replace('', 'Desconhecido')  # Substituir valores vazios por 'Desconhecido'
+
 # Definindo o layout
 st.set_page_config(page_title="Análise de Filmes", page_icon="🎬", layout="wide")
 st.title("Análise de Filmes e Previsão de Avaliações")
@@ -49,7 +62,7 @@ st.markdown("""
 
 # Exibir os primeiros dados com um título
 st.subheader("Primeiras Linhas do DataFrame")
-st.dataframe(df[["budget", "revenue", "vote_average", "popularity", "vote_count"]].describe())
+st.write(df.head())
 
 # Divisão em variáveis de entrada (X) e variável de saída (y)
 X = df[['budget', 'revenue', 'popularity', 'vote_count']]
