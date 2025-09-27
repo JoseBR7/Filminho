@@ -82,18 +82,6 @@ rmse = np.sqrt(mse)
 r2 = r2_score(y_test, y_pred)
 
 # Exibir os resultados da regressão com título
-st.subheader("Resultados da Regressão Linear")
-st.write(f"**MSE (Erro Quadrático Médio)**: {mse:.2f}")
-st.write(f"**RMSE (Raiz do Erro Quadrático Médio)**: {rmse:.2f}")
-st.write(f"**R² (Coeficiente de Determinação)**: {r2:.2f}")
-
-# Exibição dos coeficientes do modelo
-st.write("**Coeficientes do Modelo de Regressão Linear**:")
-coef_df = pd.DataFrame({
-    'Variáveis': X.columns,
-    'Coeficientes': model.coef_
-})
-st.write(coef_df)
 
 # Função para gerar gráficos
 def plot_distribution():
@@ -132,6 +120,18 @@ option = st.sidebar.selectbox(
 
 # Renderizar gráfico conforme a seleção do usuário
 if option == "Distribuição das Avaliações":
+    st.subheader("Resultados da Regressão Linear")
+    st.write(f"**MSE (Erro Quadrático Médio)**: {mse:.2f}")
+    st.write(f"**RMSE (Raiz do Erro Quadrático Médio)**: {rmse:.2f}")
+    st.write(f"**R² (Coeficiente de Determinação)**: {r2:.2f}")
+
+    # Exibição dos coeficientes do modelo
+    st.write("**Coeficientes do Modelo de Regressão Linear**:")
+    coef_df = pd.DataFrame({
+    'Variáveis': X.columns,
+    'Coeficientes': model.coef_
+})
+st.write(coef_df)
     st.subheader("Distribuição das Avaliações (Vote Average)")
     plot_distribution()
 
