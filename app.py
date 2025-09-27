@@ -156,7 +156,7 @@ elif sidebar_option == "Modelos":
 # Seção: Conclusões
 elif sidebar_option == "Conclusões":
     st.title("Conclusões")
-    st.markdown("""
+    st.markdown(""
         As principais conclusões deste estudo incluem:
         - O **orçamento** e a **receita** dos filmes têm uma correlação positiva significativa.
         - Filmes com maior **popularidade** tendem a ter avaliações mais altas.
