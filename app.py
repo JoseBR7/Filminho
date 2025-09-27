@@ -51,47 +51,6 @@ st.markdown("""
 st.subheader("Primeiras Linhas do DataFrame")
 st.write(df.head())
 
-# Visualização da distribuição das avaliações com título
-st.subheader("Distribuição das Avaliações (Vote Average)")
-sns.set(style="whitegrid")
-fig, ax = plt.subplots(figsize=(10, 6))
-sns.histplot(df['vote_average'], kde=True, color='purple', ax=ax)
-ax.set_title("Distribuição das Avaliações dos Filmes")
-st.pyplot(fig)
-
-# Visualização do gráfico de dispersão entre orçamento e receita com título
-st.subheader("Gráfico de Dispersão entre Orçamento e Receita")
-fig, ax = plt.subplots(figsize=(10, 6))
-sns.scatterplot(data=df, x='budget', y='revenue', color='teal', ax=ax)
-ax.set_title("Relação entre Orçamento e Receita dos Filmes")
-ax.set_xlabel("Orçamento")
-ax.set_ylabel("Receita")
-st.pyplot(fig)
-
-# Função para obter o gênero principal
-def main_genre_in_list(genre_list):
-    if genre_list:
-        return genre_list[0]['name']
-    return None
-
-# Criar a coluna de gênero principal
-df['main_genre'] = df['genres'].apply(main_genre_in_list)
-
-# Boxplot para avaliação por gênero com título
-st.subheader("Boxplot das Avaliações por Gênero Principal")
-fig, ax = plt.subplots(figsize=(12, 6))
-sns.boxplot(data=df, x='main_genre', y='vote_average', palette='Set2', ax=ax)
-ax.set_title("Avaliações por Gênero de Filme")
-ax.set_xticklabels(ax.get_xticklabels(), rotation=90)
-st.pyplot(fig)
-
-# Contagem de filmes por idioma original com título
-st.subheader("Contagem de Filmes por Idioma Original")
-fig, ax = plt.subplots(figsize=(10, 8))
-sns.countplot(data=df, y='original_language', order=df['original_language'].value_counts().index, palette='coolwarm', ax=ax)
-ax.set_title("Distribuição de Filmes por Idioma Original")
-st.pyplot(fig)
-
 # Divisão em variáveis de entrada (X) e variável de saída (y)
 X = df[['budget', 'revenue', 'popularity', 'vote_count']]
 y = df['vote_average']
@@ -123,22 +82,14 @@ coef_df = pd.DataFrame({
 })
 st.write(coef_df)
 
-# Adicionando uma barra lateral
-st.sidebar.header("Opções de Visualização")
-option = st.sidebar.selectbox(
-    "Escolha uma visualização:",
-    ["Distribuição das Avaliações", "Gráfico de Dispersão", "Boxplot por Gênero", "Contagem de Idioma"]
-)
-
-if option == "Distribuição das Avaliações":
-    st.subheader("Distribuição das Avaliações (Vote Average)")
+# Função para gerar gráficos
+def plot_distribution():
     fig, ax = plt.subplots(figsize=(10, 6))
     sns.histplot(df['vote_average'], kde=True, color='purple', ax=ax)
     ax.set_title("Distribuição das Avaliações dos Filmes")
     st.pyplot(fig)
 
-elif option == "Gráfico de Dispersão":
-    st.subheader("Gráfico de Dispersão entre Orçamento e Receita")
+def plot_scatter():
     fig, ax = plt.subplots(figsize=(10, 6))
     sns.scatterplot(data=df, x='budget', y='revenue', color='teal', ax=ax)
     ax.set_title("Relação entre Orçamento e Receita dos Filmes")
@@ -146,17 +97,39 @@ elif option == "Gráfico de Dispersão":
     ax.set_ylabel("Receita")
     st.pyplot(fig)
 
-elif option == "Boxplot por Gênero":
-    st.subheader("Boxplot das Avaliações por Gênero Principal")
+def plot_boxplot():
     fig, ax = plt.subplots(figsize=(12, 6))
     sns.boxplot(data=df, x='main_genre', y='vote_average', palette='Set2', ax=ax)
     ax.set_title("Avaliações por Gênero de Filme")
     ax.set_xticklabels(ax.get_xticklabels(), rotation=90)
     st.pyplot(fig)
 
-else:
-    st.subheader("Contagem de Filmes por Idioma Original")
+def plot_countplot():
     fig, ax = plt.subplots(figsize=(10, 8))
     sns.countplot(data=df, y='original_language', order=df['original_language'].value_counts().index, palette='coolwarm', ax=ax)
     ax.set_title("Distribuição de Filmes por Idioma Original")
     st.pyplot(fig)
+
+# Adicionando uma barra lateral
+st.sidebar.header("Opções de Visualização")
+option = st.sidebar.selectbox(
+    "Escolha uma visualização:",
+    ["Distribuição das Avaliações", "Gráfico de Dispersão", "Boxplot por Gênero", "Contagem de Idioma"]
+)
+
+# Renderizar gráfico conforme a seleção do usuário
+if option == "Distribuição das Avaliações":
+    st.subheader("Distribuição das Avaliações (Vote Average)")
+    plot_distribution()
+
+elif option == "Gráfico de Dispersão":
+    st.subheader("Gráfico de Dispersão entre Orçamento e Receita")
+    plot_scatter()
+
+elif option == "Boxplot por Gênero":
+    st.subheader("Boxplot das Avaliações por Gênero Principal")
+    plot_boxplot()
+
+else:
+    st.subheader("Contagem de Filmes por Idioma Original")
+    plot_countplot()
