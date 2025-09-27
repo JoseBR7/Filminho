@@ -161,3 +161,32 @@ elif sidebar_option == "Conclusões":
         - O **orçamento** e a **receita** dos filmes têm uma correlação positiva significativa.
         - Filmes com maior **popularidade** tendem a ter avaliações mais altas.
         - O modelo de regressão linear obteve uma boa performance, com **R\u00B2** superior a 0.7, indicando que ele consegue explicar uma boa""")
+
+elif sidebar_option == "Sugestões de Negócio":
+    st.title("Sugestões de Negócio")
+    st.markdown("""
+        Com base nas análises realizadas, podemos fazer algumas sugestões que podem ser úteis para o setor de cinema:
+
+        ### 1. Otimização de Orçamento e Receita
+        - A análise indicou que há uma forte correlação entre o **orçamento** e a **receita** dos filmes. 
+        - Sugestão: Investir de maneira mais estratégica em filmes de maior orçamento, focando em marketing eficaz e um bom planejamento de distribuição.
+
+        ### 2. Exploração de Gêneros Populares
+        - Certos gêneros de filmes, como **Ação**, **Aventura** e **Ficção Científica**, tendem a gerar boas avaliações e popularidade.
+        - Sugestão: Priorizar a produção desses gêneros ou investir em inovações dentro desses segmentos, como combinações com outros gêneros ou experimentações.
+
+        ### 3. Foco na Popularidade e Marketing
+        - Filmes com maior **popularidade** têm melhores chances de obter boas avaliações.
+        - Sugestão: Priorizar campanhas de marketing para aumentar a popularidade de filmes antes do lançamento, utilizando redes sociais e influenciadores, além de apostar em pré-estreias e engajamento com a audiência.
+
+        ### 4. Idioma Original e Mercado Internacional
+        - Filmes com uma maior diversidade de **idiomas originais** tendem a atrair um público mais global.
+        - Sugestão: Investir em versões dubladas e legendadas para diferentes mercados, além de considerar produções que atendam a uma diversidade de culturas e idiomas.
+
+        ### 5. Análise de Dados e Previsões
+        - O modelo de regressão linear mostrou que podemos prever as avaliações de filmes com base em **orçamento**, **popularidade** e **número de votos**.
+        - Sugestão: Utilizar esses modelos preditivos para tomar decisões sobre onde investir em produções, quais filmes têm maior potencial de sucesso, e realizar ajustes em tempo real para otimizar as receitas.
+
+        ## Considerações Finais
+        As análises e modelos preditivos podem ser uma ferramenta poderosa para os tomadores de decisão na indústria cinematográfica. Usando essas informações, é possível otimizar investimentos, selecionar os melhores gêneros e ajustar estratégias de marketing para garantir o sucesso de futuros lançamentos.
+    """)
