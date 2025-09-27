@@ -62,7 +62,7 @@ st.markdown("""
 
 # Exibir os primeiros dados com um título
 st.subheader("Primeiras Linhas do DataFrame")
-st.write(df.head())
+st.dataframe(df[["budget", "revenue", "vote_average", "popularity", "vote_count"]].describe())
 
 # Divisão em variáveis de entrada (X) e variável de saída (y)
 X = df[['budget', 'revenue', 'popularity', 'vote_count']]
